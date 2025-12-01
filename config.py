@@ -10,7 +10,9 @@ class Config:
     MT5_SERVER = os.getenv("MT5_SERVER", "Exness-MT5Trial")
 
     # Trading Settings
-    SYMBOL = "EURUSD"  # Default symbol
+    # Trading Settings
+    SYMBOLS = ["GBPUSD", "EURUSD", "XAUUSD", "BTCUSD", "ETHUSD", "NZDUSD"]
+
     
     # Timeframes
     # Analysis (Higher Timeframes)
@@ -18,7 +20,8 @@ class Config:
     # Execution (Lower Timeframes)
     LTF_TIMEFRAMES = ["M15", "M5", "M1"]
     
-    VOLUME = 0.01      # Lot size
+    VOLUME = 0.01      # Lot size (deprecated, now calculated dynamically)
+    RISK_PERCENT = 5.0 # Maximum risk per trade (% of account balance)
     DEVIATION = 20     # Slippage in points
     MAGIC_NUMBER = 123456
 
