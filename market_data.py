@@ -8,11 +8,49 @@ class MarketData:
         self.connected = False
 
     def connect(self):
-        if not mt5.initialize(login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER):
-            print("initialize() failed, error code =", mt5.last_error())
+        # Try to initialize with explicit path first
+        mt5_paths = [
+            r"C:\Program Files\MetaTrader 5\terminal64.exe",
+            r"C:\Program Files (x86)\MetaTrader 5\terminal64.exe",
+        ]
+        
+        initialized = False
+        
+        # Try with explicit paths
+        for path in mt5_paths:
+            import os
+            if os.path.exists(path):
+                print(f"Trying MT5 at: {path}")
+                if mt5.initialize(path=path, login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER):
+                    initialized = True
+                    break
+        
+        # Try without path (auto-detect)
+        if not initialized:
+            print("Trying auto-detect...")
+            if mt5.initialize(login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER):
+                initialized = True
+        
+        if not initialized:
+            error = mt5.last_error()
+            print("=" * 50)
+            print("FAILED TO CONNECT TO MT5")
+            print("=" * 50)
+            print(f"Error Code: {error}")
+            print()
+            print("Troubleshooting Steps:")
+            print("1. Verify MetaTrader 5 (64-bit) is installed")
+            print("2. Check installation at:")
+            for path in mt5_paths:
+                print(f"   - {path}")
+            print("3. Ensure MT5 is running and logged in")
+            print("4. Check if your Python is 64-bit:")
+            print("   python -c \"import struct; print(struct.calcsize('P') * 8)\"")
+            print("=" * 50)
             return False
+            
         self.connected = True
-        print(f"Connected to MT5: {mt5.terminal_info()}")
+        print(f"✅ Connected to MT5: {mt5.terminal_info()}")
         return True
 
     def disconnect(self):

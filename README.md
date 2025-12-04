@@ -13,6 +13,10 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
 
 ## 🛠️ Setup
 
+**Prerequisites:**
+*   Python 3.12.6 (64-bit) - [Download here](https://www.python.org/downloads/release/python-3126/)
+*   MetaTrader 5 (64-bit) - [Download here](https://www.metatrader5.com/en/download)
+
 1.  **Clone the repo**:
     ```bash
     git clone https://github.com/Hotboy0001/trading_bot.git
