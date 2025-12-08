@@ -21,14 +21,16 @@ class MarketData:
             import os
             if os.path.exists(path):
                 print(f"Trying MT5 at: {path}")
-                if mt5.initialize(path=path, login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER):
+                # Increase timeout to 60 seconds
+                if mt5.initialize(path=path, timeout=60000):
                     initialized = True
                     break
         
         # Try without path (auto-detect)
         if not initialized:
             print("Trying auto-detect...")
-            if mt5.initialize(login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER):
+            # Increase timeout to 60 seconds
+            if mt5.initialize(timeout=60000):
                 initialized = True
         
         if not initialized:
@@ -39,13 +41,10 @@ class MarketData:
             print(f"Error Code: {error}")
             print()
             print("Troubleshooting Steps:")
-            print("1. Verify MetaTrader 5 (64-bit) is installed")
-            print("2. Check installation at:")
-            for path in mt5_paths:
-                print(f"   - {path}")
-            print("3. Ensure MT5 is running and logged in")
-            print("4. Check if your Python is 64-bit:")
-            print("   python -c \"import struct; print(struct.calcsize('P') * 8)\"")
+            print("1. Ensure MT5 is running as Administrator")
+            print("2. Disable 'Algo Trading' button in MT5 and re-enable it")
+            print("3. Check Tools -> Options -> Expert Advisors -> Allow WebRequest")
+            print("4. Restart MT5 Terminal")
             print("=" * 50)
             return False
             

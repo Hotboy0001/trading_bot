@@ -9,16 +9,6 @@ from execution import Execution
 from risk_manager import RiskManager
 
 def main():
-    # Check if setup has been run
-    if not os.path.exists('.env'):
-        print("=" * 50)
-        print("⚠️  SETUP REQUIRED")
-        print("=" * 50)
-        print("No configuration file found.")
-        print("Please run: python setup.py")
-        print("=" * 50)
-        sys.exit(1)
-    
     print("Starting Turtle Soup Trading Bot...")
     
     # Initialize Market Data

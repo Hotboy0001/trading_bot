@@ -5,13 +5,13 @@ load_dotenv()
 
 class Config:
     # MT5 Login Credentials
-    MT5_LOGIN = int(os.getenv("MT5_LOGIN", "0"))
-    MT5_PASSWORD = os.getenv("MT5_PASSWORD", "")
-    MT5_SERVER = os.getenv("MT5_SERVER", "Exness-MT5Trial")
+    # Credentials are now handled by the MT5 Terminal itself
+    # Ensure you are logged into your account in the MT5 app
+
 
     # Trading Settings
     # Trading Settings
-    SYMBOLS = ["GBPUSD", "EURUSD", "XAUUSD", "BTCUSD", "ETHUSD", "NZDUSD"]
+    SYMBOLS = ["XAUUSD", "EURUSD", "BTCUSD", "GBPUSD", "NZDUSD"]
 
     
     # Timeframes
