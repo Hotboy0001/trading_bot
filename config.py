@@ -5,8 +5,9 @@ load_dotenv()
 
 class Config:
     # MT5 Login Credentials
-    # Credentials are now handled by the MT5 Terminal itself
-    # Ensure you are logged into your account in the MT5 app
+    MT5_LOGIN = int(os.getenv("MT5_LOGIN", "0"))
+    MT5_PASSWORD = os.getenv("MT5_PASSWORD", "")
+    MT5_SERVER = os.getenv("MT5_SERVER", "Exness-MT5Trial")
 
 
     # Trading Settings
@@ -21,7 +22,19 @@ class Config:
     LTF_TIMEFRAMES = ["M15", "M5", "M1"]
     
     VOLUME = 0.01      # Lot size (deprecated, now calculated dynamically)
-    RISK_PERCENT = 5.0 # Maximum risk per trade (% of account balance)
+    RISK_PERCENT = 3.0 # Maximum risk per trade (% of account balance)
+    DAILY_LOSS_LIMIT = 15.0 # Stop trading if daily loss exceeds this %
+    
+    # Trailing Stop Settings
+    TRAILING_ENABLE = True
+    TRAILING_ACTIVATE_RR = 3.5 # Activate when price reaches 3.5R profit
+    TRAILING_DIST_RR = 1.5     # Trail behind price by 1.5R (Loose trail)
+    
+    # News Filter Settings
+    NEWS_FILTER_ENABLE = True
+    NEWS_PAUSE_MINS_BEFORE = 30
+    NEWS_PAUSE_MINS_AFTER = 30
+    
     DEVIATION = 20     # Slippage in points
     MAGIC_NUMBER = 123456
 

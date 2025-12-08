@@ -22,7 +22,7 @@ class MarketData:
             if os.path.exists(path):
                 print(f"Trying MT5 at: {path}")
                 # Increase timeout to 60 seconds
-                if mt5.initialize(path=path, timeout=60000):
+                if mt5.initialize(path=path, login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER, timeout=60000):
                     initialized = True
                     break
         
@@ -30,7 +30,7 @@ class MarketData:
         if not initialized:
             print("Trying auto-detect...")
             # Increase timeout to 60 seconds
-            if mt5.initialize(timeout=60000):
+            if mt5.initialize(login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER, timeout=60000):
                 initialized = True
         
         if not initialized:

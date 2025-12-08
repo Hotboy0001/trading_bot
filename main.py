@@ -8,7 +8,21 @@ from strategy import TurtleSoupStrategy
 from execution import Execution
 from risk_manager import RiskManager
 
+from news_manager import NewsManager
+from trade_manager import TradeManager
+from datetime import datetime
+
 def main():
+    # Check if setup has been run
+    if not os.path.exists('.env'):
+        print("=" * 50)
+        print("⚠️  SETUP REQUIRED")
+        print("=" * 50)
+        print("No configuration file found.")
+        print("Please run: python setup.py")
+        print("=" * 50)
+        sys.exit(1)
+
     print("Starting Turtle Soup Trading Bot...")
     
     # Initialize Market Data
@@ -16,22 +30,57 @@ def main():
     if not md.connect():
         sys.exit(1)
         
+    # Initialize Managers
+    news_manager = NewsManager()
+    
+    # Daily Loss Tracking
+    current_day = datetime.now().day
+    daily_start_balance = 0.0
+    
+    # Get initial balance
+    account_info = mt5.account_info()
+    if account_info:
+        daily_start_balance = account_info.balance
+    
     try:
         while True:
-            # Get account balance for position sizing
+            # 0. Manage Open Positions (Trailing Stop)
+            TradeManager.manage_positions()
+            
+            # Get account info
             account_info = mt5.account_info()
             if account_info is None:
                 print("Failed to get account info. Skipping this cycle.")
                 time.sleep(60)
                 continue
             
+            # 1. Daily Loss Limit Check
+            # Reset daily balance if new day
+            now = datetime.now()
+            if now.day != current_day:
+                current_day = now.day
+                daily_start_balance = account_info.balance
+                print(f"[DAILY] New Day! Resetting Daily Start Balance to ${daily_start_balance:.2f}")
+            
+            current_equity = account_info.equity
+            daily_loss_percent = ((daily_start_balance - current_equity) / daily_start_balance) * 100
+            
+            if daily_loss_percent >= Config.DAILY_LOSS_LIMIT:
+                print(f"🛑 DAILY LOSS LIMIT HIT! Loss: {daily_loss_percent:.2f}% (Limit: {Config.DAILY_LOSS_LIMIT}%). Pausing trading for today.")
+                time.sleep(3600) # Sleep 1 hour
+                continue
+            
             account_balance = account_info.balance
-            print(f"Account Balance: ${account_balance:.2f}")
+            # print(f"Account Balance: ${account_balance:.2f} | Daily Loss: {daily_loss_percent:.2f}%")
             
             for symbol in Config.SYMBOLS:
+                # 2. News Filter Check
+                if news_manager.is_news_impact(symbol):
+                    continue
+                    
                 print(f"--- Analyzing {symbol} ---")
                 
-                # 1. Analyze Higher Timeframes (HTF)
+                # 3. Analyze Higher Timeframes (HTF)
                 htf_bias = None
                 confluence_score = 0
                 biases = []
@@ -60,17 +109,20 @@ def main():
                         print(f"[{symbol}] Conflicting HTF signals. Skipping.")
                         htf_bias = None
                 
-                # 2. Execute on Lower Timeframes (LTF) if Bias exists
+                # 4. Execute on Lower Timeframes (LTF) if Bias exists
                 if htf_bias:
-                    # Determine Risk:Reward Ratio based on Confluence
+                    # Determine Risk:Reward Ratio and Max Lot Cap based on Confluence
                     rr_ratio = 3.0
+                    max_lot_cap = 0.03  # Low confidence cap
                     
                     if confluence_score == 2:
                         rr_ratio = 5.0
+                        max_lot_cap = 0.06 # Medium confidence cap
                     elif confluence_score >= 3:
                         rr_ratio = 7.0
+                        max_lot_cap = 0.10 # High confidence cap
                     
-                    print(f"[{symbol}] Switching to LTF Execution for {htf_bias} bias (Score: {confluence_score}, RR: 1:{rr_ratio})...")
+                    print(f"[{symbol}] Switching to LTF Execution for {htf_bias} bias (Score: {confluence_score}, RR: 1:{rr_ratio}, MaxLot: {max_lot_cap})...")
                     
                     # Check LTF for Entry
                     for tf in Config.LTF_TIMEFRAMES:
@@ -89,7 +141,8 @@ def main():
                                     symbol=symbol,
                                     sl_distance_price=sl_distance,
                                     risk_percent=Config.RISK_PERCENT,
-                                    account_balance=account_balance
+                                    account_balance=account_balance,
+                                    max_lots=max_lot_cap
                                 )
                                 
                                 if volume > 0:

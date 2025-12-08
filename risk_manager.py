@@ -2,7 +2,7 @@ import MetaTrader5 as mt5
 
 class RiskManager:
     @staticmethod
-    def calculate_lot_size(symbol, sl_distance_price, risk_percent, account_balance):
+    def calculate_lot_size(symbol, sl_distance_price, risk_percent, account_balance, max_lots=None):
         """
         Calculate lot size based on risk percentage and stop loss distance.
         
@@ -11,6 +11,7 @@ class RiskManager:
             sl_distance_price: Stop loss distance in price units
             risk_percent: Risk percentage (e.g., 5.0 for 5%)
             account_balance: Account balance
+            max_lots: Optional maximum lot size cap (e.g., 0.1)
             
         Returns:
             Calculated lot size, capped at max allowed
@@ -50,15 +51,19 @@ class RiskManager:
         
         # Apply min/max limits
         min_lot = symbol_info.volume_min
-        max_lot = symbol_info.volume_max
+        max_lot_symbol = symbol_info.volume_max
         lot_step = symbol_info.volume_step
         
         # Round to lot step
         lot_size = round(lot_size / lot_step) * lot_step
         
-        # Clamp to limits
-        lot_size = max(min_lot, min(lot_size, max_lot))
+        # Clamp to symbol limits
+        lot_size = max(min_lot, min(lot_size, max_lot_symbol))
         
-        print(f"[RISK] {symbol}: Balance=${account_balance:.2f}, Risk={risk_percent}%, SL Distance={sl_distance_price:.5f}, Lot Size={lot_size:.2f}")
+        # Apply custom max cap if provided
+        if max_lots is not None:
+            lot_size = min(lot_size, max_lots)
+            
+        print(f"[RISK] {symbol}: Balance=${account_balance:.2f}, Risk={risk_percent}%, SL Dist={sl_distance_price:.5f}, Max Cap={max_lots}, Final Lot={lot_size:.2f}")
         
         return lot_size

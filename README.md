@@ -7,8 +7,11 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
 *   **Multi-Pair Support**: Trades XAUUSD, EURUSD, BTCUSD, GBPUSD, NZDUSD simultaneously.
 *   **Multi-Timeframe Analysis**: Scans Higher Timeframes (H4, H2, H1) for major setups.
 *   **Precision Entry**: Executes on Lower Timeframes (M15, M5, M1) using MSS + FVG.
-*   **Dynamic Position Sizing**: Never risks more than 5% of account balance per trade.
+*   **Dynamic Position Sizing**: Never risks more than 3% of account balance per trade.
 *   **Adaptive Risk:Reward**: Adjusts RR (1:3 to 1:7) based on signal confidence.
+*   **Trailing Stop**: Activates at 1:3.5 RR and trails to lock in profits.
+*   **News Filter**: Automatically pauses trading during high-impact economic events.
+*   **Daily Loss Limit**: Stops trading if daily loss hits 15%.
 *   **S/R Confirmation**: Filters trades using High Volume Support & Resistance levels.
 
 ## 🛠️ Setup
@@ -28,10 +31,14 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
     pip install -r requirements.txt
     ```
 
-3.  **Login to MT5**:
-    *   Open MetaTrader 5 manually.
-    *   **Login** to your account (File -> Login to Trade Account).
-    *   **Keep MT5 running**.
+3.  **Run Setup** (Interactive Configuration):
+    ```bash
+    python setup.py
+    ```
+    The setup will ask you to:
+    *   Choose between **Real** or **Trial** account
+    *   Enter your MT5 login and password
+    *   Confirm and save
 
 4.  **Run**:
     ```bash
