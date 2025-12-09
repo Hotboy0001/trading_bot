@@ -28,7 +28,7 @@ class Config:
     # Trailing Stop Settings
     TRAILING_ENABLE = True
     TRAILING_ACTIVATE_RR = 3.5 # Activate when price reaches 3.5R profit
-    TRAILING_DIST_RR = 1.5     # Trail behind price by 1.5R (Loose trail)
+    TRAILING_DIST_RR = 2.0     # Trail behind price by 2.0R (Looser trail)
     
     # News Filter Settings
     NEWS_FILTER_ENABLE = True

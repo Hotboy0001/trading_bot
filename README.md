@@ -9,7 +9,7 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
 *   **Precision Entry**: Executes on Lower Timeframes (M15, M5, M1) using MSS + FVG.
 *   **Dynamic Position Sizing**: Never risks more than 3% of account balance per trade.
 *   **Adaptive Risk:Reward**: Adjusts RR (1:3 to 1:7) based on signal confidence.
-*   **Trailing Stop**: Activates at 1:3.5 RR and trails to lock in profits.
+*   **Trailing Stop**: Activates at 1:3.5 RR and trails by 2.0R to lock in profits.
 *   **News Filter**: Automatically pauses trading during high-impact economic events.
 *   **Daily Loss Limit**: Stops trading if daily loss hits 15%.
 *   **S/R Confirmation**: Filters trades using High Volume Support & Resistance levels.
@@ -19,6 +19,7 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
 **Prerequisites:**
 *   Python 3.12.6 (64-bit) - [Download here](https://www.python.org/downloads/release/python-3126/)
 *   MetaTrader 5 (64-bit) - [Download here](https://www.metatrader5.com/en/download)
+*   Git for Windows - [Download here](https://git-scm.com/download/win)
 
 1.  **Clone the repo**:
     ```bash
