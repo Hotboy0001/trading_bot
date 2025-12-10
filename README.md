@@ -38,7 +38,6 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
         ```bash
         python main.py
         ```
-    *   *(Optional)* Run `python setup.py` if you want the bot to handle login automatically.
 
 4.  **Run**:
     ```bash

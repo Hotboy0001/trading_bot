@@ -17,7 +17,7 @@ def main():
     
     # Check if setup has been run, but don't enforce it
     if not os.path.exists('.env'):
-        print("⚠️  No .env file found. Using active MT5 terminal session/credentials.")
+        pass # Silent fallback to manual login
 
     print("Starting Turtle Soup Trading Bot...")
     

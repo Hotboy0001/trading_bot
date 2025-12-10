@@ -7,7 +7,7 @@ class Config:
     # MT5 Login Credentials
     MT5_LOGIN = int(os.getenv("MT5_LOGIN", "0"))
     MT5_PASSWORD = os.getenv("MT5_PASSWORD", "")
-    MT5_SERVER = os.getenv("MT5_SERVER", "ExnessMU-MT5Trial9")
+    MT5_SERVER = os.getenv("MT5_SERVER", "")
 
 
     # Trading Settings
