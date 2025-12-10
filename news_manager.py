@@ -16,33 +16,16 @@ class NewsManager:
             return
 
         try:
-            # Get events for the next 24 hours
-            start = datetime.now()
-            end = start + timedelta(days=1)
+            # Note: The native MT5 Python API does not support calendar_events as of 5.0.45.
+            # To avoid external dependencies (requests/beautifulsoup) for a simple script,
+            # we will temporarily disable the internal fetcher.
             
-            # Fetch calendar events
-            events = mt5.calendar_events(start, end)
-            
-            if events is None:
-                print("Failed to fetch calendar events")
-                return
-
-            # Filter for High Impact (importance=3) and relevant currencies
-            # We focus on USD, EUR, GBP, NZD as they are in our traded pairs
-            relevant_currencies = ['USD', 'EUR', 'GBP', 'NZD', 'XAU', 'BTC']
-            
+            # Use external API or custom implementation here if needed.
+            # For now, we keep the list empty to prevent crashes.
             self.high_impact_events = []
-            for event in events:
-                if event.importance == 3: # High Impact
-                    # We need to get the currency for this event
-                    # mt5.calendar_events returns a tuple/object. 
-                    # We might need to fetch details or filter by country if currency isn't direct.
-                    # Actually, calendar_events returns 'currency_code' usually? 
-                    # Let's verify the structure. If not, we filter by importance only to be safe.
-                    self.high_impact_events.append(event)
             
+            # print("[NEWS] Native calendar API not available. News filter inactive.")
             self.last_update = datetime.now()
-            print(f"[NEWS] Calendar updated. Found {len(self.high_impact_events)} high impact events for next 24h.")
             
         except Exception as e:
             print(f"[NEWS] Error fetching calendar: {e}")

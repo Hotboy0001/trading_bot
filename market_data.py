@@ -77,6 +77,11 @@ class MarketData:
         self.connected = False
 
     def get_rates(self, symbol, timeframe, num_bars=1000):
+        # Ensure symbol is selected in Market Watch
+        if not mt5.symbol_select(symbol, True):
+            print(f"Failed to select symbol: {symbol}")
+            return None
+
         # Map string timeframe to MT5 constant
         tf_map = {
             "M1": mt5.TIMEFRAME_M1,
@@ -91,7 +96,7 @@ class MarketData:
 
         rates = mt5.copy_rates_from_pos(symbol, mt5_tf, 0, num_bars)
         if rates is None:
-            print(f"Failed to get rates for {symbol}")
+            print(f"Failed to get rates for {symbol} (Error: {mt5.last_error()})")
             return None
 
         df = pd.DataFrame(rates)

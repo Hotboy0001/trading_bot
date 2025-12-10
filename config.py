@@ -31,7 +31,9 @@ class Config:
     TRAILING_DIST_RR = 2.0     # Trail behind price by 2.0R (Looser trail)
     
     # News Filter Settings
-    NEWS_FILTER_ENABLE = True
+    # Disabled by default as MT5 API lacks native calendar support. 
+    # Enable only if you implement external API source.
+    NEWS_FILTER_ENABLE = False 
     NEWS_PAUSE_MINS_BEFORE = 30
     NEWS_PAUSE_MINS_AFTER = 30
     
