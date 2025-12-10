@@ -8,36 +8,37 @@ class MarketData:
         self.connected = False
 
     def connect(self):
-        # Try to initialize with explicit path first
-        mt5_paths = [
-            r"C:\Program Files\MetaTrader 5\terminal64.exe",
-            r"C:\Program Files (x86)\MetaTrader 5\terminal64.exe",
-        ]
-        
         initialized = False
-        
-        # Try with explicit paths
-        for path in mt5_paths:
-            import os
-            if os.path.exists(path):
-                print(f"Trying MT5 at: {path}")
-                # Increase timeout to 60 seconds
-                if mt5.initialize(path=path, login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER, timeout=60000):
-                    initialized = True
-                    break
-        
-        # Try without path (auto-detect) with credentials
+
+        # 1. ATTEMPT 1: Try auto-detect (Connect to existing open terminal)
+        # This is the preferred method for VPS/Manual usage
+        print("Attempting to connect to running MT5 terminal...")
+        if mt5.initialize(timeout=60000):
+            initialized = True
+            print("✓ Found open MT5 terminal")
+            
+        # 2. ATTEMPT 2: Try with credentials (if provided in config)
         if not initialized and Config.MT5_LOGIN != 0:
             print("Trying auto-detect with credentials...")
             if mt5.initialize(login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER, timeout=60000):
                 initialized = True
-                
-        # Final fallback: Try auto-detect WITHOUT credentials (existing session)
+
+        # 3. ATTEMPT 3: Try explicit paths (Fallback for local PC)
         if not initialized:
-            print("Trying auto-detect with existing terminal session...")
-            if mt5.initialize(timeout=60000):
-                initialized = True
-        
+            mt5_paths = [
+                r"C:\Program Files\MetaTrader 5\terminal64.exe",
+                r"C:\Program Files (x86)\MetaTrader 5\terminal64.exe",
+                r"C:\Program Files\Exness MetaTrader 5\terminal64.exe", # Added Exness path
+            ]
+            
+            for path in mt5_paths:
+                import os
+                if os.path.exists(path):
+                    print(f"Trying explicit path: {path}")
+                    if mt5.initialize(path=path, timeout=60000):
+                        initialized = True
+                        break
+
         if not initialized:
             error = mt5.last_error()
             print("=" * 50)
@@ -45,16 +46,30 @@ class MarketData:
             print("=" * 50)
             print(f"Error Code: {error}")
             print()
-            print("Troubleshooting Steps:")
-            print("1. Ensure MT5 is running as Administrator")
-            print("2. Disable 'Algo Trading' button in MT5 and re-enable it")
-            print("3. Check Tools -> Options -> Expert Advisors -> Allow WebRequest")
-            print("4. Restart MT5 Terminal")
+            print("TROUBLESHOOTING:")
+            print("1. Close ALL MetaTrader windows.")
+            print("2. Open ONLY your Exness MT5.")
+            print("3. Login to your account manually.")
+            print("4. Try running the bot again.")
             print("=" * 50)
             return False
             
+        # Check if authorized
+        account_info = mt5.account_info()
+        if account_info is None:
+            print("=" * 50)
+            print("❌ CONNECTED BUT NOT AUTHORIZED")
+            print("The bot found a terminal, but it is not logged in.")
+            print("Please ensure you are logged into your trading account in MT5.")
+            print(f"MT5 Info: {mt5.terminal_info()}")
+            print("=" * 50)
+            # We don't return False here because sometimes account_info takes a split second, 
+            # but usually it means auth failed. Let's try to proceed or fail hard?
+            # User wants script bot. Fail hard is safer.
+            return False
+
         self.connected = True
-        print(f"✅ Connected to MT5: {mt5.terminal_info()}")
+        print(f"✅ Connected to Account: {account_info.login}")
         return True
 
     def disconnect(self):
