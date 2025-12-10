@@ -79,7 +79,7 @@ def main():
                 if not symbol:
                     continue
                     
-                print(f"--- Analyzing {symbol} ---")
+                # print(f"--- Analyzing {symbol} ---")
                 
                 # 3. Analyze Higher Timeframes (HTF)
                 htf_bias = None
@@ -162,7 +162,7 @@ def main():
                     # print(f"[{symbol}] No HTF Setup found.")
                     pass
             
-            print("Finished cycle. Waiting 60s...")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] Scan complete. Waiting 60s...")
             # Sleep cycle
             time.sleep(60)
             

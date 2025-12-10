@@ -85,7 +85,7 @@ class MarketData:
             return base_symbol
             
         # 2. Search for matches
-        print(f"Searching for partial match for {base_symbol}...")
+        # print(f"Searching for partial match for {base_symbol}...")
         all_symbols = mt5.symbols_get()
         if all_symbols is None:
             return None
@@ -95,7 +95,7 @@ class MarketData:
             # limiting length diff to 3 to avoid matching EURUSD -> EURUSDJPY? No, that's different.
             if s.name.startswith(base_symbol) and (len(s.name) - len(base_symbol) <= 3):
                 if mt5.symbol_select(s.name, True):
-                    print(f"✓ Found broker symbol: {s.name}")
+                    # print(f"✓ Found broker symbol: {s.name}")
                     return s.name
                     
         print(f"❌ Could not find valid symbol for {base_symbol}")
