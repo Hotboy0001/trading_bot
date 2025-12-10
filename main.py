@@ -69,9 +69,14 @@ def main():
             account_balance = account_info.balance
             # print(f"Account Balance: ${account_balance:.2f} | Daily Loss: {daily_loss_percent:.2f}%")
             
-            for symbol in Config.SYMBOLS:
+            for base_symbol in Config.SYMBOLS:
                 # 2. News Filter Check
-                if news_manager.is_news_impact(symbol):
+                if news_manager.is_news_impact(base_symbol):
+                    continue
+                
+                # Resolve Broker Specific Symbol (handles suffixes like EURUSD.m)
+                symbol = md.resolve_symbol(base_symbol)
+                if not symbol:
                     continue
                     
                 print(f"--- Analyzing {symbol} ---")

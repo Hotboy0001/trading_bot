@@ -76,12 +76,32 @@ class MarketData:
         mt5.shutdown()
         self.connected = False
 
-    def get_rates(self, symbol, timeframe, num_bars=1000):
-        # Ensure symbol is selected in Market Watch
-        if not mt5.symbol_select(symbol, True):
-            print(f"Failed to select symbol: {symbol}")
+    def resolve_symbol(self, base_symbol):
+        """
+        Attempts to find the correct symbol name for the broker (handling suffixes like .m, _i, etc.)
+        """
+        # 1. Try exact match first
+        if mt5.symbol_select(base_symbol, True):
+            return base_symbol
+            
+        # 2. Search for matches
+        print(f"Searching for partial match for {base_symbol}...")
+        all_symbols = mt5.symbols_get()
+        if all_symbols is None:
             return None
+            
+        for s in all_symbols:
+            # Check if symbol starts with base AND is visible or can be selected
+            # limiting length diff to 3 to avoid matching EURUSD -> EURUSDJPY? No, that's different.
+            if s.name.startswith(base_symbol) and (len(s.name) - len(base_symbol) <= 3):
+                if mt5.symbol_select(s.name, True):
+                    print(f"✓ Found broker symbol: {s.name}")
+                    return s.name
+                    
+        print(f"❌ Could not find valid symbol for {base_symbol}")
+        return None
 
+    def get_rates(self, symbol, timeframe, num_bars=1000):
         # Map string timeframe to MT5 constant
         tf_map = {
             "M1": mt5.TIMEFRAME_M1,
