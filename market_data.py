@@ -26,11 +26,16 @@ class MarketData:
                     initialized = True
                     break
         
-        # Try without path (auto-detect)
-        if not initialized:
-            print("Trying auto-detect...")
-            # Increase timeout to 60 seconds
+        # Try without path (auto-detect) with credentials
+        if not initialized and Config.MT5_LOGIN != 0:
+            print("Trying auto-detect with credentials...")
             if mt5.initialize(login=Config.MT5_LOGIN, password=Config.MT5_PASSWORD, server=Config.MT5_SERVER, timeout=60000):
+                initialized = True
+                
+        # Final fallback: Try auto-detect WITHOUT credentials (existing session)
+        if not initialized:
+            print("Trying auto-detect with existing terminal session...")
+            if mt5.initialize(timeout=60000):
                 initialized = True
         
         if not initialized:

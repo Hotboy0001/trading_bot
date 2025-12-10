@@ -13,15 +13,11 @@ from trade_manager import TradeManager
 from datetime import datetime
 
 def main():
-    # Check if setup has been run
+    print("Starting Turtle Soup Trading Bot...")
+    
+    # Check if setup has been run, but don't enforce it
     if not os.path.exists('.env'):
-        print("=" * 50)
-        print("⚠️  SETUP REQUIRED")
-        print("=" * 50)
-        print("No configuration file found.")
-        print("Please run: python setup.py")
-        print("=" * 50)
-        sys.exit(1)
+        print("⚠️  No .env file found. Using active MT5 terminal session/credentials.")
 
     print("Starting Turtle Soup Trading Bot...")
     

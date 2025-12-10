@@ -32,14 +32,13 @@ A sophisticated algorithmic trading bot for MetaTrader 5 (MT5) that combines the
     pip install -r requirements.txt
     ```
 
-3.  **Run Setup** (Interactive Configuration):
-    ```bash
-    python setup.py
-    ```
-    The setup will ask you to:
-    *   Choose between **Real** or **Trial** account
-    *   Enter your MT5 login and password
-    *   Confirm and save
+3.  **Login & Run**:
+    *   **Open MT5** and login manually.
+    *   **Run the bot**:
+        ```bash
+        python main.py
+        ```
+    *   *(Optional)* Run `python setup.py` if you want the bot to handle login automatically.
 
 4.  **Run**:
     ```bash
