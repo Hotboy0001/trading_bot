@@ -33,7 +33,7 @@ def setup():
             print("✓ Selected: REAL Account")
             break
         elif account_type == '2':
-            server = "Exness-MT5Trial"
+            server = "ExnessMU-MT5Trial9"
             print("✓ Selected: TRIAL Account")
             break
         else:
